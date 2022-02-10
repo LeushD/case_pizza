@@ -1,9 +1,32 @@
+import 'package:case_pizza/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_switch/sliding_switch.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MyAppTheme());
+}
+
+final ValueNotifier<ThemeMode> _notifier = ValueNotifier(ThemeMode.light);
+
+class MyAppTheme extends StatelessWidget {
+  const MyAppTheme({Key? key}) : super(key: key);
+  //final ValueNotifier<ThemeMode> _notifier = ValueNotifier(ThemeMode.light);
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: _notifier,
+      builder: (_, mode, __) {
+        return MaterialApp(
+          theme: globalTheme1(),
+          darkTheme: globalTheme2(),
+          themeMode: mode,
+          home: const MyApp(),
+        );
+      },
+    );
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -15,7 +38,7 @@ class MyApp extends StatefulWidget {
 
 enum SauceName {tomato, tar, hot}
 
-class _MyAppState extends State<MyApp>{
+class _MyAppState extends State<MyApp> {
   bool _thin = false;
   double _size = 40;
   int _cost = 290;
@@ -23,14 +46,15 @@ class _MyAppState extends State<MyApp>{
   bool _cheese = false;
   Color _bgColor = const Color.fromRGBO(200, 200, 200, 0.75);
 
-  void _slideThin(bool val){
+
+  void _slideThin(bool val) {
     setState(() {
       _thin = val;
       _calculate();
     });
   }
 
-  void _onSizeChange(dynamic val){
+  void _onSizeChange(dynamic val) {
     setState(() {
       _size = val;
       _calculate();
@@ -38,26 +62,24 @@ class _MyAppState extends State<MyApp>{
   }
 
 
-  void _onCheeseClick(bool? val){
+  void _onCheeseClick(bool? val) {
     setState(() {
       _cheese = !_cheese;
       _calculate();
     });
   }
 
-  void _onSauceClick(SauceName? val)
-  {
+  void _onSauceClick(SauceName? val) {
     setState(() {
       _sauceName = val;
       _calculate();
     });
   }
 
-  void _calculate()
-  {
-    _cost = 200 + (_size*2).round() + (_thin ? 1 : 0)*30 + (_cheese ? 1 : 0)*40;
-    switch (_sauceName)
-    {
+  void _calculate() {
+    _cost = 200 + (_size * 2).round() + (_thin ? 1 : 0) * 30 +
+        (_cheese ? 1 : 0) * 40;
+    switch (_sauceName) {
       case SauceName.tomato:
         _cost += 10;
         break;
@@ -71,34 +93,20 @@ class _MyAppState extends State<MyApp>{
         _cost += 10;
     }
   }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    const headerTextStyle = TextStyle(
-        fontSize: 32,
-        fontFamily: 'LetteraTrentadue',
-        color: Colors.black
-    );
-    const descriptionTextStyle = TextStyle(
-        fontSize: 26,
-        fontFamily: 'BureauAP',
-        color: Colors.brown);
-    const elementTextStyle = TextStyle(
-        fontSize: 22,
-        fontFamily: 'BureauAP',
-        color: Colors.black
-    );
+    bool _isDarkTheme = false;
+
     return MaterialApp(
       title: 'Калькулятор пиццы',
-      theme: ThemeData(
-        primarySwatch: Colors.brown,
-        fontFamily: 'BureauAP',
-      ),
+      theme: globalTheme1(),
       home: Scaffold(
         body: Container(
           decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/background.jpg'),
+                image: AssetImage('assets/images/background_light.jpg'),
                 repeat: ImageRepeat.repeat,
               )
           ),
@@ -108,12 +116,21 @@ class _MyAppState extends State<MyApp>{
             child: Column(children: [
               Container(
                 alignment: Alignment.center,
-                child: SizedBox(width: 300, height: 180, child: Image.asset('assets/images/pizza.png'),),
+                child: SizedBox(
+                  width: 300,
+                  height: 180,
+                  child: Image.asset('assets/images/pizza.png'),),
               ),
-              const SizedBox(height: 20,),
-              const Text('Калькулятор пиццы', style: headerTextStyle),
+              SizedBox(height: 20,),
+              Text('Калькулятор пиццы', style: Theme
+                  .of(context)
+                  .textTheme
+                  .headline1,),
               const SizedBox(height: 9,),
-              const Text('Выберите параметры:', style: descriptionTextStyle),
+              Text('Выберите параметры:', style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyText1,),
               const SizedBox(height: 9,),
               SlidingSwitch(
 
@@ -136,7 +153,10 @@ class _MyAppState extends State<MyApp>{
               Container(
                   alignment: Alignment.centerLeft,
                   margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: const Text('Размер:', style: descriptionTextStyle)),
+                  child: Text('Размер:', style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyText1)),
               const SizedBox(height: 9,),
               SizedBox(
                 width: 300,
@@ -159,28 +179,42 @@ class _MyAppState extends State<MyApp>{
               Container(
                   alignment: Alignment.centerLeft,
                   margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: const Text('На каком соусе:', style: descriptionTextStyle)),
+                  child: Text('На каком соусе:', style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyText1)),
               RadioListTile<SauceName>(
-                  title: const Text('Томатный', style: elementTextStyle),
+                  title: Text('Томатный', style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyText2),
                   value: SauceName.tomato,
                   groupValue: _sauceName,
                   onChanged: _onSauceClick
               ),
               RadioListTile<SauceName>(
-                  title: const Text('Тар-тар', style: elementTextStyle),
+                  title: Text('Тар-тар', style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyText2),
                   value: SauceName.tar,
                   groupValue: _sauceName,
                   onChanged: _onSauceClick
               ),
               RadioListTile<SauceName>(
-                  title: const Text('Кимчи', style: elementTextStyle),
+                  title: Text('Кимчи', style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyText2),
                   value: SauceName.hot,
                   groupValue: _sauceName,
                   onChanged: _onSauceClick
               ),
               Container(
-                margin: const EdgeInsets.symmetric(vertical:10, horizontal: 10),
-                padding: const EdgeInsets.symmetric(vertical:10, horizontal: 10),
+                margin: const EdgeInsets.symmetric(
+                    vertical: 10, horizontal: 10),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10, horizontal: 10),
                 decoration: BoxDecoration(
                   color: const Color.fromRGBO(200, 200, 200, 0.75),
                   borderRadius: BorderRadius.circular(10),
@@ -191,12 +225,16 @@ class _MyAppState extends State<MyApp>{
                     children: [
                       Expanded(
                           flex: 1,
-                          child: Image.asset('assets/images/cheese.png', scale: 10,)),
+                          child: Image.asset(
+                            'assets/images/cheese.png', scale: 10,)),
                       Expanded(
                           flex: 3,
                           child: Container(
                               alignment: Alignment.center,
-                              child: const Text('Ещё сыра', style: descriptionTextStyle)
+                              child: Text('Больше сыра', style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .bodyText1)
                           )
                       ),
                       Expanded(
@@ -212,10 +250,15 @@ class _MyAppState extends State<MyApp>{
               Container(
                   alignment: Alignment.centerLeft,
                   margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: const Text('Стоимость:', style: descriptionTextStyle)),
+                  child: Text('Стоимость:', style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyText1)),
               Container(
-                margin: const EdgeInsets.symmetric(vertical:10, horizontal: 10),
-                padding: const EdgeInsets.symmetric(vertical:10, horizontal: 10),
+                margin: const EdgeInsets.symmetric(
+                    vertical: 10, horizontal: 10),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10, horizontal: 10),
                 decoration: BoxDecoration(
                   color: _bgColor,
                   borderRadius: BorderRadius.circular(10),
@@ -228,14 +271,21 @@ class _MyAppState extends State<MyApp>{
                           flex: 3,
                           child: Container(
                               alignment: Alignment.center,
-                              child: Text('$_cost руб.', style: descriptionTextStyle)
+                              child: Text('$_cost руб.', style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .bodyText1)
                           )
                       ),
                     ]),
               ),
               const SizedBox(height: 20,),
               SizedBox(width: 154, height: 60,
-                child: ElevatedButton(onPressed: () {}, child: Text('Заказать', style: descriptionTextStyle),
+                child: ElevatedButton(
+                    onPressed: () {}, child: Text('Заказать', style: Theme
+                    .of(context)
+                    .textTheme
+                    .bodyText1),
                     style: ElevatedButton.styleFrom(
                       primary: Color.fromRGBO(206, 188, 160, 1),
                       shape: RoundedRectangleBorder(
@@ -243,12 +293,22 @@ class _MyAppState extends State<MyApp>{
                       ),
                     )),
               ),
-              const SizedBox(height: 20,),
+              SwitchListTile(
+                  title: Text('Тёмная тема'),
+                  value: _isDarkTheme,
+                  onChanged: (val) {
+                    setState(() {
+                      _isDarkTheme = !_isDarkTheme;
+                      if (_isDarkTheme) {
+
+                      }
+                    });
+                  }),
             ],
             ),
           ),
         ),
       ),
     );
+    }
   }
-}
