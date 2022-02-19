@@ -124,7 +124,7 @@ class MainScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
             Text("Кейс 2.3"),
-            Text("Суханов А.Н."),
+            Text("Леушканов Д.А."),
           ],
         ),
       ),

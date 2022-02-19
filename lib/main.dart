@@ -6,45 +6,37 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 void main() {
   runApp(const MyAppTheme());
 }
-
-final ValueNotifier<ThemeMode> _notifier = ValueNotifier(ThemeMode.light);
+const String appTitle = 'Калькулятор пиццы';
 
 class MyAppTheme extends StatelessWidget {
   const MyAppTheme({Key? key}) : super(key: key);
-  //final ValueNotifier<ThemeMode> _notifier = ValueNotifier(ThemeMode.light);
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: _notifier,
-      builder: (_, mode, __) {
         return MaterialApp(
-          theme: globalTheme1(),
-          darkTheme: globalTheme2(),
-          themeMode: mode,
+          theme: isLight(),
+          darkTheme: isDark(),
           home: const MyApp(),
         );
-      },
-    );
   }
 }
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
-
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 enum SauceName {tomato, tar, hot}
 
 class _MyAppState extends State<MyApp> {
+  bool _isDarkTheme = false;
   bool _thin = false;
   double _size = 40;
   int _cost = 290;
   SauceName? _sauceName = SauceName.hot;
   bool _cheese = false;
-  Color _bgColor = const Color.fromRGBO(200, 200, 200, 0.75);
+  final Color _bgColor = const Color.fromRGBO(200, 200, 200, 0.75);
 
 
   void _slideThin(bool val) {
@@ -97,21 +89,18 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    bool _isDarkTheme = false;
 
     return MaterialApp(
       title: 'Калькулятор пиццы',
-      theme: globalTheme1(),
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Container(
           decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/background_light.jpg'),
-                repeat: ImageRepeat.repeat,
-              )
+            image: DecorationImage(
+              image: AssetImage('assets/images/background_light.jpg'),
+              repeat: ImageRepeat.repeat,
+            )
           ),
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SingleChildScrollView(
             child: Column(children: [
               Container(
@@ -121,8 +110,9 @@ class _MyAppState extends State<MyApp> {
                   height: 180,
                   child: Image.asset('assets/images/pizza.png'),),
               ),
-              SizedBox(height: 20,),
-              Text('Калькулятор пиццы', style: Theme
+              const SizedBox(height: 20,),
+              Text('Калькулятор пиццы',
+                style: Theme
                   .of(context)
                   .textTheme
                   .headline1,),
@@ -144,8 +134,8 @@ class _MyAppState extends State<MyApp> {
                 width: 300,
                 colorOn: Colors.red,
                 colorOff: Colors.red,
-                buttonColor: Color.fromRGBO(206, 188, 160, 1),
-                inactiveColor: Color.fromRGBO(300, 300, 300, 0.65),
+                inactiveColor: const Color.fromRGBO(300, 300, 300, 0.65),
+                buttonColor: const Color.fromRGBO(206, 188, 160, 1),
                 background: _bgColor,
 
               ),
@@ -287,21 +277,23 @@ class _MyAppState extends State<MyApp> {
                     .textTheme
                     .bodyText1),
                     style: ElevatedButton.styleFrom(
-                      primary: Color.fromRGBO(206, 188, 160, 1),
+                      primary: const Color.fromRGBO(206, 188, 160, 1),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(36.0),
                       ),
                     )),
               ),
-              SwitchListTile(
-                  title: Text('Тёмная тема'),
+              const SizedBox(height: 20,),
+               SwitchListTile(
+                title: Text('Тёмная тема', style: Theme
+                    .of(context)
+                    .textTheme
+                    .bodyText2),
                   value: _isDarkTheme,
                   onChanged: (val) {
                     setState(() {
                       _isDarkTheme = !_isDarkTheme;
-                      if (_isDarkTheme) {
-
-                      }
+                      if (_isDarkTheme) {}
                     });
                   }),
             ],
